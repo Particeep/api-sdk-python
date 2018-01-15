@@ -2,11 +2,11 @@
 
 Python client-side auth and query the Particeep API
 
-## Obtaining an API access
+## Obtaining your API access
 
 You can sign up for a Particeep account at https://admin.particeep.com
 
-Please see the [Particeep API docs](https://www.particeep.com/en/docs) for the most up-to-date documentation.
+Please see the [Particeep API docs](https://www.particeep.com/en/doc) for the most up-to-date documentation.
 
 
 ## Requirements
@@ -23,12 +23,16 @@ Exemples:
   - `python3 particeep_api_client.py "fundraises/search"`
   - `python3 particeep_api_client.py "user/search/dupont"`
 
-
 ## Test
 
-You can run
+You can run particeep_api_client.py directly in command line like above
 
-You can import functions from particeep_api_client.py like this
+You can also import functions from particeep_api_client.py like this:
+```
+from particeep_api_client import build_authorization_header, build_date_header
+```
+
+Then, a full test module could look like this:
 
 ```
 from particeep_api_client import build_authorization_header, build_date_header
@@ -49,12 +53,12 @@ def test():
     print("json: %s" % http_response.json())
 ```
 
-## Work in progress
-
-#### step 1 (done):
+## Functionalities
   - generate auth secret from key
-  - simple GET querying of API endpoint
-  - to be continued
+  - simple querying of all GET API endpoints
+  - json return values
 
-#### step 2 (in progress):
-  - PUT a new user
+#### In progress
+  - other REST methods: ie PUT a new user
+  - config file
+  - higher-level objects
