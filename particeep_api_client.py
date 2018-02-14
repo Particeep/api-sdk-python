@@ -3,7 +3,7 @@
 Requêtes simples sur l'API Particeep
 """
 
-from requests   import get
+from requests   import get, post
 from datetime   import datetime
 from hashlib    import sha1
 from base64     import urlsafe_b64encode
@@ -33,34 +33,48 @@ def build_authorization_header(api_key, api_secret, date_time):
 def build_date_header():
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-def apiget(route):
+def api_request(method, route, payload=None):
     """
-    endpoint + query => response json
+    endpoint + query [+ payload] => response json
     """
+    if route[0] == "/":
+        route = route[1:]
+
     url = SCHEME + "//" + SRV + '/' + VER + '/' + route
-    date_time = build_date_header()
-    warn("url:", url)
-    # requests.get
-    resp = get(
-        url,
-        headers={
-            "Authorization": build_authorization_header(KEY, SEC, date_time),
-            "DateTime": date_time,
-            "Accept": "application/json"
-        }
-    )
-    warn("response.status_code", resp.status_code)
-    return resp.json()
+
+    warn("URL:" + url)
+    h_date_time = build_date_header()
+    h_auth = build_authorization_header(KEY, SEC, h_date_time)
+    headers={
+        "Authorization": h_auth,
+        "DateTime": h_date_time,
+        "Accept": "application/json"
+    }
+    resp = None
+    if (method == "GET"):
+        resp = get(url, headers=headers)
+    elif (method == "POST"):
+        warn("POST with payload:/%s/" % payload)
+        resp = post(url, json=loads(payload), headers=headers)
+    if resp.status_code == 200:
+        return resp.json()
+    else:
+        warn("response.status_code", resp.status_code)
+        return resp.text
+
 
 def warn(*args):
     print(*args, file=stderr)
 
 
 if __name__ == "__main__":
-    if len(argv) > 1:
-        resp_json = apiget(argv[1])
+    if len(argv) == 2:
+        print("ARGV", argv)
+        resp_json = api_request("GET", argv[1])
+    elif len(argv) > 2:
+        resp_json = api_request("POST", argv[1], argv[2])
     else:
         warn("DEMO: 'user/name/dupont':")
-        resp_json = apiget("user/name/dupont")
+        resp_json = api_request("GET", "user/name/dupont")
 
     print(dumps(resp_json, indent=2))
