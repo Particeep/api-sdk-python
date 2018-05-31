@@ -22,6 +22,11 @@ Please see the [Particeep API docs](https://www.particeep.com/en/doc) for the mo
 
 Python 3 or later.
 
+Then install the only lib:
+   ```pip3 install requests```
+   or
+   ```sudo pip3 install requests```
+
 
 ## Usage
 
