@@ -2,6 +2,7 @@
 
 Python client-side auth and query the Particeep API
 
+
 ## Obtaining your API access
 
 You can sign up for a Particeep account at https://admin.particeep.com
@@ -9,23 +10,59 @@ You can sign up for a Particeep account at https://admin.particeep.com
 Please see the [Particeep API docs](https://www.particeep.com/en/doc) for the most up-to-date documentation.
 
 
+## Functionalities
+  - command line querying of all Particeep API endpoints
+  - generate auth secret from key/secret in `keys.conf`
+  - output return values:
+    - binary file for download endpoints
+    - json for all the other endpoints
+
+
 ## Requirements
 
 Python 3 or later.
 
+
 ## Usage
+
+You can run particeep_api_client.py directly in command line
+
 ```
 python3 particeep_api_client.py /path/to/api/endpoint
+python3 particeep_api_client.py METHOD /path/to/api/endpoint
+python3 particeep_api_client.py METHOD /path/to/api/endpoint '{jsonpayload}'
+python3 particeep_api_client.py METHOD /path/to/api/endpoint '{jsonpayload}' > output.json
 ```
 
 Exemples:
-  - `python3 particeep_api_client.py "info"`
-  - `python3 particeep_api_client.py "fundraises/search"`
-  - `python3 particeep_api_client.py "user/search/dupont"`
+  - `python3 particeep_api_client.py info`
+  - `python3 particeep_api_client.py fundraises/search`
+  - `python3 particeep_api_client.py user/search/dupont"`
+  - `python3 particeep_api_client.py PUT form/answer/<user_id> '[{"question_id":"<question_id>","answer":["Yes"]}]'`
+  - `python3 particeep_api_client.py POST loan/fundraise/<fundraise_id> '{"amount_target": 500000}'`
 
-## Test
 
-You can run particeep_api_client.py directly in command line like above
+## Config
+The file `keys.conf` contains the values that will be used:
+  - to build the url of the API server to query (section `[url]`)
+      - exemple:
+        ```
+        scheme = http:
+        server = local.particeep.com:9100/v1
+        ```
+
+  - as authentication keys (section `[consumer]`)
+      - exemple:
+        ```
+        key = test_flow_928c5516-e56e-4dd3-9ffb-5
+        sec = 12345678-0000-1000-a000-0123456789ab
+        ```
+      - to get your keys, see *Obtaining your API access* above
+
+Values should not be quoted. Any key can be commented out with '#'
+
+
+## Importing as a lib
 
 You can also import functions from particeep_api_client.py like this:
 ```
@@ -53,12 +90,4 @@ def test():
     print("json: %s" % http_response.json())
 ```
 
-## Functionalities
-  - generate auth secret from key
-  - simple querying of all GET API endpoints
-  - json return values
-
-#### In progress
-  - other REST methods: ie PUT a new user
-  - config file
-  - higher-level objects
+(c) 2017-2018 Particeep
